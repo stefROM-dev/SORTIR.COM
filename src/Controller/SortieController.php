@@ -33,10 +33,14 @@ class SortieController extends AbstractController
      * @param int $id
      * @return Response
      */
-    public function display(int $id) {
+    public function display(int $id)
+    {
         $sortie = $this->repository->find($id);
-        if ($sortie != null) { return $this->render('sortie/display.html.twig', ["sortie" => $sortie]); }
-        else { return $this->redirectToRoute("sorties_display"); }
+        if ($sortie != null) {
+            return $this->render('sortie/display.html.twig', ["sortie" => $sortie]);
+        } else {
+            return $this->redirectToRoute("sorties_display");
+        }
     }
 
     /**
@@ -45,7 +49,8 @@ class SortieController extends AbstractController
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function persist(int $id, Request $request) {
+    public function persist(int $id, Request $request)
+    {
         // Checking if the already entity exists, is still available to update, and was made by the current user.
         // Redirecting to different routes if one is not the case.
         $sortie = new Sortie();
@@ -55,10 +60,12 @@ class SortieController extends AbstractController
                 return $this->redirectToRoute("sortie_display", ["id" => $sortie->getId()]);
             }
         }
-        if (!$sortie) { return $this->redirectToRoute("sortie_persist"); }
+        if (!$sortie) {
+            return $this->redirectToRoute("sortie_persist");
+        }
 
         // Creating the form and handling the request.
-        $sortieForm =$this->createForm(SortieType::class, $sortie );
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
         // Handling the form submission.
@@ -72,9 +79,13 @@ class SortieController extends AbstractController
             // Setting the field "etat" according to the submit input which was clicked on:
             $redirection = "sortie_display";
             $status = 1;
-            if ($sortieForm->get('save')->isClicked()) { $redirection = "sortie_persist"; }
-            else if ($sortieForm->get('publish')->isClicked()) { $status = 2; }
-            else if ($sortieForm->get('delete')->isClicked()) { $status = 6; }
+            if ($sortieForm->get('save')->isClicked()) {
+                $redirection = "sortie_persist";
+            } else if ($sortieForm->get('publish')->isClicked()) {
+                $status = 2;
+            } else if ($sortieForm->get('delete')->isClicked()) {
+                $status = 6;
+            }
             $this->service->setEtat($sortie, $status, $this->getDoctrine()->getRepository(Etat::class));
 
             // Persisting the entity.
@@ -95,9 +106,10 @@ class SortieController extends AbstractController
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function list(Request $request, SerializerInterface $serializer) {
+    public function list(Request $request, SerializerInterface $serializer)
+    {
         $participant = $request->get("participant");
-        $nom = $request->get("nom") ? $request->get("nom") : "" ;
+        $nom = $request->get("nom") ? $request->get("nom") : "";
         $campus = $request->get("campus");
         $from = $request->get("from");
         $to = $request->get("to");
@@ -119,7 +131,25 @@ class SortieController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function home(Request $request) {
+    public function home(Request $request)
+    {
         return $this->render("sortie/sorties.html.twig");
     }
+
+    /**
+     *
+     */
+    public function subscribe()
+    {
+
+    }
+
+    /**
+     *
+     */
+    public function unsubscribe()
+    {
+
+    }
+
 }
